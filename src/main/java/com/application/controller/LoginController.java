@@ -35,6 +35,7 @@ public class LoginController
 	
 	@PostMapping("/loginuser")
 //	@CrossOrigin(origins = "https://onlinetutorialsystem.netlify.app")
+	@CrossOrigin(origins = {"http://localhost:3000","https://onlinetutorialsystem.netlify.app"})
 	public User loginUser(@RequestBody User user) throws Exception
 	{
 		String currEmail = user.getEmail();
@@ -54,6 +55,7 @@ public class LoginController
 	
 	@PostMapping("/loginprofessor")
 //	@CrossOrigin(origins = "https://onlinetutorialsystem.netlify.app")
+	@CrossOrigin(origins = {"http://localhost:3000","https://onlinetutorialsystem.netlify.app"})
 	public Professor loginDoctor(@RequestBody Professor professor) throws Exception
 	{
 		String currEmail = professor.getEmail();
@@ -72,6 +74,7 @@ public class LoginController
 	}
 	@PostMapping("/loginadmin")
 //	@CrossOrigin(origins = "https://onlinetutorialsystem.netlify.app")
+	@CrossOrigin(origins = {"http://localhost:3000","https://onlinetutorialsystem.netlify.app"})
 	public Admin1 loginAdmin(@RequestBody Admin1 admin) throws Exception
 	{
 		String currEmail = admin.getEmail();

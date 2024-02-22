@@ -40,7 +40,7 @@ public class UserController
 	
 	
 	@GetMapping("/userlist")
-//	@CrossOrigin(origins = "https://onlinetutorialsystem.netlify.app")
+	@CrossOrigin(origins = {"http://localhost:3000","https://onlinetutorialsystem.netlify.app"})
 	public ResponseEntity<List<User>> getUsers() throws Exception
 	{
 		List<User> users = userService.getAllUsers();
@@ -52,7 +52,7 @@ public class UserController
 	
 	
 	@GetMapping("/userprofileDetails/{email}")
-//	@CrossOrigin(origins = "https://onlinetutorialsystem.netlify.app/")
+@CrossOrigin(origins = {"http://localhost:3000","https://onlinetutorialsystem.netlify.app"})
 	public ResponseEntity<List<User>> getProfileDetails(@PathVariable String email) throws Exception
 	{
 		List<User> users = userService.fetchProfileByEmail(email);
@@ -61,6 +61,7 @@ public class UserController
 	
 	@PutMapping("/updateuser")
 //	@CrossOrigin(origins = "http://onlinetutorialsystem.netlify.app")
+	@CrossOrigin(origins = {"http://localhost:3000","https://onlinetutorialsystem.netlify.app"})
 	public ResponseEntity<User> updateUserProfile(@RequestBody User user) throws Exception
 	{
 		User userobj = userService.updateUserProfile(user);
@@ -69,6 +70,7 @@ public class UserController
 	
 	@GetMapping("/gettotalusers")
 //	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = {"http://localhost:3000","https://onlinetutorialsystem.netlify.app"})
 	public ResponseEntity<List<Integer>> getTotalUsers() throws Exception
 	{
 		List<User> users = userService.getAllUsers();
@@ -80,6 +82,7 @@ public class UserController
 	
 	@PostMapping("/upuser")
 //	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = {"http://localhost:3000","https://onlinetutorialsystem.netlify.app"})
 	public User registerUser(@RequestBody User user) throws Exception
 	{
 		String currEmail = user.getEmail();
