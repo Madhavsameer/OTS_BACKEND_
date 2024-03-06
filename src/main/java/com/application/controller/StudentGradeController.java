@@ -12,7 +12,7 @@ import com.application.services.StudentGradeService;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000","https://onlinetutorialsystem.netlify.app"})
 public class StudentGradeController {
     @Autowired
     private StudentGradeService studentGradeService;
