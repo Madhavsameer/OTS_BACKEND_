@@ -14,7 +14,7 @@ import com.application.services.FeedbackService;
 
 @RestController
 @RequestMapping("/api/feedback")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000","https://onlinetutorialsystem.netlify.app"})
 public class FeedbackController {
     private final FeedbackService feedbackService;
 
