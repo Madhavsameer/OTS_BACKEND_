@@ -1,58 +1,66 @@
 package com.application.services;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.google.api.gax.paging.Page;
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.application.model.Video;
-import com.application.repository.VideoRepository;
-
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class VideoService {
 
-    @Value("${upload.folder.path}")
-    private String uploadFolderPath;
+    @Value("${firebase.credentials.path}")
+    private String credentialsPath;
 
-    @Autowired
-    private VideoRepository videoRepository;
+    @Value("${firebase.storage.bucket}")
+    private String bucketName;
 
-    public Video uploadVideo(MultipartFile file) {
+    public void uploadVideo(MultipartFile file) throws IOException {
+        // Initialize Firebase Storage client
+        Storage storage = StorageOptions.newBuilder()
+                .setCredentials(ServiceAccountCredentials.fromStream(new FileInputStream(credentialsPath)))
+                .build()
+                .getService();
+
+        // Generate a unique filename for the uploaded video
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+
+        // Upload video file to Firebase Storage
+        BlobId blobId = BlobId.of(bucketName, fileName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+        storage.create(blobInfo, file.getBytes());
+    }
+
+    public List<String> getUploadedVideoUrls() {
         try {
-            Video video = new Video();
-            video.setName(file.getOriginalFilename());
-            String httpServer="http://localhost:8081";
-            String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
-            String url= httpServer+File.separator+fileName;
-            
-            String filePath = uploadFolderPath + File.separator + fileName;
-            video.setUrl(url);
-            // Save the video metadata to database
-            Video savedVideo = videoRepository.save(video);
-            // Save the video file to file system
-            File destFile = new File(filePath);
-            file.transferTo(destFile);
-            return savedVideo;
+            // Initialize Firebase Storage client
+            Storage storage = StorageOptions.newBuilder()
+                    .setCredentials(ServiceAccountCredentials.fromStream(new FileInputStream(credentialsPath)))
+                    .build()
+                    .getService();
+
+            // List all objects (files) in the bucket
+            List<String> urls = new ArrayList<>();
+            Page<Blob> blobs = storage.list(bucketName);
+            for (Blob blob : blobs.iterateAll()) {
+                // Get the URL of each object (file) in the bucket
+                String url = blob.getMediaLink();
+                urls.add(url);
+            }
+            return urls;
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload video: " + e.getMessage());
+            throw new RuntimeException("Failed to fetch uploaded videos: " + e.getMessage());
         }
     }
-
-    // Other methods...
-
-
-    public Video getVideoById(Long id) {
-        return videoRepository.findById(id).orElse(null);
-    }
-    public List<Video> getAllVideos() {
-        return videoRepository.findAll();
-    }
 }
-
-
 
