@@ -10,32 +10,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.application.model.Video;
-import com.application.repository.VideoRepository;
+import com.application.model.Note;
+import com.application.repository.NoteRepository;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/videos")
+@RequestMapping("/api/notes")
 @CrossOrigin(origins = "http://localhost:3000")
-public class VideoController {
+public class NoteController {
 
     @Autowired
     private GridFsOperations gridFsOperations;
 
     @Autowired
-    private VideoRepository videoRepository;
+    private NoteRepository noteRepository;
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("title") String title) {
         try {
             ObjectId fileId = gridFsOperations.store(file.getInputStream(), file.getOriginalFilename(), file.getContentType());
-            Video video = new Video();
-            video.setTitle(title);
-            video.setFileId(fileId.toHexString()); // Store ObjectId as String
-            videoRepository.save(video);
+            Note note = new Note();
+            note.setTitle(title);
+            note.setFileId(fileId.toHexString()); // Store ObjectId as String
+            noteRepository.save(note);
             return ResponseEntity.status(HttpStatus.OK).body("File uploaded successfully");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading file");
@@ -44,11 +44,11 @@ public class VideoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<byte[]> getFile(@PathVariable String id) {
-        Video video = videoRepository.findById(id).orElse(null);
-        if (video == null) {
+        Note note = noteRepository.findById(id).orElse(null);
+        if (note == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        String fileId = video.getFileId();
+        String fileId = note.getFileId();
         if (fileId != null) {
             try {
                 GridFSFile gridFSFile = gridFsOperations.findOne(new Query().addCriteria(Criteria.where("_id").is(new ObjectId(fileId))));
@@ -67,8 +67,8 @@ public class VideoController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Video>> getAllVideos() {
-        List<Video> videos = videoRepository.findAll();
-        return ResponseEntity.ok().body(videos);
+    public ResponseEntity<List<Note>> getAllNotes() {
+        List<Note> notes = noteRepository.findAll();
+        return ResponseEntity.ok().body(notes);
     }
 }
