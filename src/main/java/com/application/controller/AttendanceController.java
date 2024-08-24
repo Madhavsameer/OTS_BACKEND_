@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/attendance")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000","https://onlinetutorialsystem.netlify.app"})
 public class AttendanceController {
     @Autowired
     private AttendanceRecordRepository attendanceRecordRepository;

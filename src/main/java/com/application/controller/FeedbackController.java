@@ -32,6 +32,5 @@ public class FeedbackController {
         return feedbackService.getAllFeedbacks();
     }
 
-    // Other methods as needed
 }
 

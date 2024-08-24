@@ -16,7 +16,7 @@ import com.application.repository.TestRepository;
 
 @RestController
 @RequestMapping("/api/tests")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000","https://onlinetutorialsystem.netlify.app"})
 public class TestController {
     @Autowired
     private TestRepository testRepository;
